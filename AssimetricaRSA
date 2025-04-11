@@ -1,0 +1,24 @@
+import java.security.*;
+import javax.crypto.Cipher;
+import java.util.Base64;
+
+public class AssimetricaRSA {
+    public static void main(String[] args) throws Exception {
+        String mensagem = "Mensagem confidencial";
+
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+        keyGen.initialize(2048);
+        KeyPair parChaves = keyGen.generateKeyPair();
+
+        Cipher cifrador = Cipher.getInstance("RSA");
+        cifrador.init(Cipher.ENCRYPT_MODE, parChaves.getPublic());
+        byte[] criptografado = cifrador.doFinal(mensagem.getBytes());
+
+        String criptografadoBase64 = Base64.getEncoder().encodeToString(criptografado);
+        System.out.println("Criptografado (RSA): " + criptografadoBase64);
+
+        cifrador.init(Cipher.DECRYPT_MODE, parChaves.getPrivate());
+        byte[] descriptografado = cifrador.doFinal(Base64.getDecoder().decode(criptografadoBase64));
+        System.out.println("Descriptografado: " + new String(descriptografado));
+    }
+}
